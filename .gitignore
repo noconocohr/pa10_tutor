@@ -1,0 +1,5 @@
+# python cache file
+*.pyc
+
+# logfile
+*.csv
