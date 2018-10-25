@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   sensor_msgs
+  trajectory_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -135,6 +136,8 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(joint_state_pub src/joint_state_pub.cpp)
+add_executable(joint_pub_moveit src/joint_pub_moveit.cpp)
+
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -148,6 +151,9 @@ add_executable(joint_state_pub src/joint_state_pub.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(joint_state_pub
+   ${catkin_LIBRARIES}
+)
+target_link_libraries(joint_pub_moveit
    ${catkin_LIBRARIES}
 )
 
