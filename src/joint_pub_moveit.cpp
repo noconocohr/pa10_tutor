@@ -116,8 +116,6 @@ void PA10Controller::TrajectoryGeneration()
         //"+1" here means that the arm is moving after 1 period of starting the program.
         time = (double)MOVING_TIME / VIA_POINT_NUM * (ticks + 1);
         arm.points[ticks].time_from_start = ros::Duration(time);
-        //TODO: spinOnce必要か？
-        ros::spinOnce();
     }
 }
 
