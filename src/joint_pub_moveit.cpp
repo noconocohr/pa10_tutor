@@ -39,7 +39,7 @@ class PA10Controller
     trajectory_msgs::JointTrajectory arm; //joint state
 
     //TODO: ticksはクラス変数のままで良いのか？
-    double ticks;
+    int ticks;
 };
 
 //Constructor (if you do not know about c++ class, please search on the internet.)
@@ -125,7 +125,7 @@ void PA10Controller::StartMoving()
     ROS_INFO("Start Moving");
 
     TrajectoryGeneration();
-    // Wait a little time to avoid error. TODO: sleepの時間が十分か検証
+    // Wait a little time to avoid error.
     ros::Duration(0.5).sleep();
     ROS_INFO("Press Enter to move");
     getc(stdin); //wait for keyboard input
