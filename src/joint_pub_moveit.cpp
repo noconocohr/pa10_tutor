@@ -87,6 +87,8 @@ void PA10Controller::initJointState()
         arm.points[0].positions[i] = 0.0;
     }
 
+    arm.header.stamp = ros::Time::now();
+    arm.header.frame_id = "";
 }
 
 /*example template
@@ -111,6 +113,7 @@ void PA10Controller::PathGenerate()
 }
 */
 
+//FIXME: 関数名がMoveJointではない。TrajectoryGenerationのほうがいいかも。
 void PA10Controller::MoveJoint()
 {
     //initiallize joint names
@@ -121,6 +124,8 @@ void PA10Controller::MoveJoint()
         {
             arm.points[ticks].positions[i] = pi / 12 * i * ticks/VIA_POINT_NUM;
         }
+
+        //"+1" here means that the arm is moving after 1 period of starting the program.
         time = (double)MOVING_TIME/VIA_POINT_NUM*(ticks+1);
         arm.points[ticks].time_from_start = ros::Duration(time);
         //TODO: spinOnce必要か？
@@ -134,31 +139,14 @@ void PA10Controller::StartMoving()
     //ros::Rate loop_rate(10); //set loop rate 10[Hz]
     ROS_INFO("Start Moving");
 
-    
-    /*
-    FIXME:ここのcin
-    関節角を計算してpublishする前に”タメ”（いくらかの時間）が必要。
-    現在はcinを使用することでタメを作っている。
-    sleepとかキーボードアクションを使うようにしたほうがいい。
-    */
-    // int a;
-    // std::cin >> a;
-
-    ros::Duration(0.5).sleep();
-    ROS_INFO("Press Enter to move");
-    getc(stdin);
 
     MoveJoint();
-    //ROS_INFO_STREAM(arm);
+    // Wait a little time to avoid error.
+    ros::Duration(0.5).sleep();
+    ROS_INFO("Press Enter to move");
+    getc(stdin); //wait for keyboard input
 
     //publish joint states
-    /*
-    TODO: 検証したいこと
-    headerへの値の代入はできればイニシャライズ関数の中で実行したい。
-    それが可能なのか?検証。
-    */
-    arm.header.stamp = ros::Time::now();
-    arm.header.frame_id = "";
     joint_pub.publish(arm);
     ROS_INFO("Published");
 }
