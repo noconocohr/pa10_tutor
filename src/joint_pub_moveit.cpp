@@ -10,6 +10,7 @@
 #include <math.h>
 
 #include "ros/ros.h"
+// TODO: この下2つ(console, jointstate)のヘッダって必要？
 #include "ros/console.h"
 #include "sensor_msgs/JointState.h"
 #include "trajectory_msgs/JointTrajectory.h"
@@ -63,6 +64,7 @@ PA10Controller::PA10Controller()
 
     arm_.points.resize(VIA_POINT_NUM);
 
+    //FIXME: この下のtime_from_startは不要かも
     arm_.points[0].time_from_start = ros::Duration((double)1 / MOVING_TIME);
 
     //それぞれのpoints[]に対して、positions[]をリサイズしないといけないみたい。頭の悪いプログラムに見えるけど、仕方ない。
