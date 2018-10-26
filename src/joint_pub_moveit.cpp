@@ -25,8 +25,8 @@ class PA10Controller
     PA10Controller(); //constructor
 
   private:
-    ros::NodeHandle node;     //node handler
-    ros::Publisher joint_pub; //define publisher
+    ros::NodeHandle node_;     //node handler
+    ros::Publisher joint_pub_; //define publisher
 
     /*Example definition of kinematics compute functions*/
     std::vector<double> ForwardKinematics(sensor_msgs::JointState *joint); //forward kinematics
@@ -36,7 +36,7 @@ class PA10Controller
     void TrajectoryGeneration();
     void PathGenerate();
 
-    trajectory_msgs::JointTrajectory arm; //joint state
+    trajectory_msgs::JointTrajectory arm_; //joint state
 
     //TODO: ticksはクラス変数のままで良いのか？
     int ticks;
@@ -46,39 +46,39 @@ class PA10Controller
 PA10Controller::PA10Controller()
 {
     //define ROS node
-    joint_pub = node.advertise<trajectory_msgs::JointTrajectory>("/pa10/pa10_joint_controller/command", 50);
+    joint_pub_ = node_.advertise<trajectory_msgs::JointTrajectory>("/pa10/pa10_joint_controller/command", 50);
 
     //initiallize joint states
-    arm.joint_names.resize(7);
-    arm.joint_names[0] = "joint_1";
-    arm.joint_names[1] = "joint_2";
-    arm.joint_names[2] = "joint_3";
-    arm.joint_names[3] = "joint_4";
-    arm.joint_names[4] = "joint_5";
-    arm.joint_names[5] = "joint_6";
-    arm.joint_names[6] = "joint_7";
+    arm_.joint_names.resize(7);
+    arm_.joint_names[0] = "joint_1";
+    arm_.joint_names[1] = "joint_2";
+    arm_.joint_names[2] = "joint_3";
+    arm_.joint_names[3] = "joint_4";
+    arm_.joint_names[4] = "joint_5";
+    arm_.joint_names[5] = "joint_6";
+    arm_.joint_names[6] = "joint_7";
     //TODO: gazebo側をいじって、残りのエンドエフェクタの関節が動くようにしたい。
-    // arm.joint_names[7] = "gripper_finger";
-    // arm.joint_names[8] = "gripper_finger_mimic_joint";
+    // arm_.joint_names[7] = "gripper_finger";
+    // arm_.joint_names[8] = "gripper_finger_mimic_joint";
 
-    arm.points.resize(VIA_POINT_NUM);
+    arm_.points.resize(VIA_POINT_NUM);
 
-    arm.points[0].time_from_start = ros::Duration((double)1 / MOVING_TIME);
+    arm_.points[0].time_from_start = ros::Duration((double)1 / MOVING_TIME);
 
     //それぞれのpoints[]に対して、positions[]をリサイズしないといけないみたい。頭の悪いプログラムに見えるけど、仕方ない。
     for (int i = 0; i < VIA_POINT_NUM; i++)
     {
-        arm.points[i].positions.resize(7);
+        arm_.points[i].positions.resize(7);
     }
 
     //Initialize Position (All angles are 0.0[rad])
     for (int i = 0; i < 7; i++)
     {
-        arm.points[0].positions[i] = 0.0;
+        arm_.points[0].positions[i] = 0.0;
     }
 
-    arm.header.stamp = ros::Time::now();
-    arm.header.frame_id = "";
+    arm_.header.stamp = ros::Time::now();
+    arm_.header.frame_id = "";
 }
 
 /*example template
@@ -110,12 +110,12 @@ void PA10Controller::TrajectoryGeneration()
         double time;
         for (int i = 0; i < 7; i++)
         {
-            arm.points[ticks].positions[i] = pi / 12 * i * ticks / VIA_POINT_NUM;
+            arm_.points[ticks].positions[i] = pi / 12 * i * ticks / VIA_POINT_NUM;
         }
 
         //"+1" here means that the arm is moving after 1 period of starting the program.
         time = (double)MOVING_TIME / VIA_POINT_NUM * (ticks + 1);
-        arm.points[ticks].time_from_start = ros::Duration(time);
+        arm_.points[ticks].time_from_start = ros::Duration(time);
     }
 }
 
@@ -131,7 +131,7 @@ void PA10Controller::StartMoving()
     getc(stdin); //wait for keyboard input
 
     //publish joint states
-    joint_pub.publish(arm);
+    joint_pub_.publish(arm_);
     ROS_INFO("Published");
 }
 
