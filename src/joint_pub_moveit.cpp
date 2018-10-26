@@ -27,7 +27,6 @@ class PA10Controller
   private:
     ros::NodeHandle node;     //node handler
     ros::Publisher joint_pub; //define publisher
-    void initJointState();
 
     /*Example definition of kinematics compute functions*/
     std::vector<double> ForwardKinematics(sensor_msgs::JointState *joint); //forward kinematics
@@ -43,20 +42,13 @@ class PA10Controller
     double ticks;
 };
 
-//Constructor
+//Constructor (if you do not know about c++ class, please search on the internet.)
 PA10Controller::PA10Controller()
 {
     //define ROS node
     joint_pub = node.advertise<trajectory_msgs::JointTrajectory>("/pa10/pa10_joint_controller/command", 50);
-}
 
-/*
-TODO: 関数名これでいいのかな？jointstateを初期化している関数ではない気が・・・
-もはやコンストラクタにぶち込んだほうがよくない？
-*/
-void PA10Controller::initJointState()
-{
-
+    //initiallize joint states
     arm.joint_names.resize(7);
     arm.joint_names[0] = "joint_1";
     arm.joint_names[1] = "joint_2";
@@ -113,8 +105,6 @@ void PA10Controller::PathGenerate()
 
 void PA10Controller::TrajectoryGeneration()
 {
-    //initiallize joint states
-    initJointState();
     for (ticks = 0; ticks < VIA_POINT_NUM; ticks++)
     {
         double time;
