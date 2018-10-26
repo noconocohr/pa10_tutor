@@ -3,3 +3,6 @@
 
 # logfile
 *.csv
+
+# vscode setting file 
+.vscode/
