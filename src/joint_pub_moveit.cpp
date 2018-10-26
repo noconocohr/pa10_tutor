@@ -15,8 +15,8 @@
 #include "trajectory_msgs/JointTrajectory.h"
 
 #define pi 3.1415926
-#define VIA_POINT_NUM 30
-#define MOVING_TIME 3.0
+#define VIA_POINT_NUM 30 //points
+#define MOVING_TIME 3.0 //seconds
 
 class PA10Controller
 {
@@ -37,7 +37,9 @@ class PA10Controller
     void MoveJoint();
     void PathGenerate();
 
-    trajectory_msgs::JointTrajectory arm; //current joint state
+    trajectory_msgs::JointTrajectory arm; //joint state
+
+    
     //TODO: いらない変数とかヘッダーとかいずれ消す。下のこの2つ
     bool ReachGoalFlag;                //true:Reached goal, false: Not reached goal
     double ticks;
@@ -129,23 +131,25 @@ void PA10Controller::MoveJoint()
 
 void PA10Controller::StartMoving()
 {
-    // ros::Rate loop_rate(10); //set loop rate 10[Hz]
+    //ros::Rate loop_rate(10); //set loop rate 10[Hz]
     ROS_INFO("Start Moving");
 
-    // 下のFIXME:を見て
-    int a;
-
-
+    
     /*
     FIXME:ここのcin
     関節角を計算してpublishする前に”タメ”（いくらかの時間）が必要。
     現在はcinを使用することでタメを作っている。
     sleepとかキーボードアクションを使うようにしたほうがいい。
     */
-    std::cin >> a;
+    // int a;
+    // std::cin >> a;
+
+    ros::Duration(0.5).sleep();
+    ROS_INFO("Press Enter to move");
+    getc(stdin);
 
     MoveJoint();
-    ROS_INFO_STREAM(arm);
+    //ROS_INFO_STREAM(arm);
 
     //publish joint states
     /*
