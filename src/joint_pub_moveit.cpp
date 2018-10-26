@@ -16,7 +16,7 @@
 
 #define pi 3.1415926
 #define VIA_POINT_NUM 30 //points
-#define MOVING_TIME 3.0 //seconds
+#define MOVING_TIME 3.0  //seconds
 
 class PA10Controller
 {
@@ -30,7 +30,7 @@ class PA10Controller
     void initJointState();
 
     /*Example definition of kinematics compute functions*/
-    std::vector<double> ForwardKinematics(sensor_msgs::JointState *joint);    //forward kinematics
+    std::vector<double> ForwardKinematics(sensor_msgs::JointState *joint); //forward kinematics
     //FIXME: メッセージ型を変えたので、関数の定義を変えたほうがいいかもね
     sensor_msgs::JointState InverseKinematics(std::vector<double> &position); //inverse kinematics
 
@@ -39,17 +39,13 @@ class PA10Controller
 
     trajectory_msgs::JointTrajectory arm; //joint state
 
-    
     //TODO: いらない変数とかヘッダーとかいずれ消す。下のこの2つ
-    bool ReachGoalFlag;                //true:Reached goal, false: Not reached goal
     double ticks;
 };
 
 //Constructor
 PA10Controller::PA10Controller()
 {
-    //initialize
-    ReachGoalFlag = false;
     //define ROS node
     joint_pub = node.advertise<trajectory_msgs::JointTrajectory>("/pa10/pa10_joint_controller/command", 50);
 }
@@ -75,15 +71,17 @@ void PA10Controller::initJointState()
 
     arm.points.resize(VIA_POINT_NUM);
 
-    arm.points[0].time_from_start = ros::Duration((double)1/MOVING_TIME);
+    arm.points[0].time_from_start = ros::Duration((double)1 / MOVING_TIME);
 
     //それぞれのpoints[]に対して、positions[]をリサイズしないといけないみたい。頭の悪いプログラムに見えるけど、仕方ない。
-    for(int i=0; i<VIA_POINT_NUM; i++){
+    for (int i = 0; i < VIA_POINT_NUM; i++)
+    {
         arm.points[i].positions.resize(7);
     }
 
     //Initialize Position (All angles are 0.0[rad])
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < 7; i++)
+    {
         arm.points[0].positions[i] = 0.0;
     }
 
@@ -118,27 +116,26 @@ void PA10Controller::MoveJoint()
 {
     //initiallize joint names
     initJointState();
-    for(ticks = 0; ticks<VIA_POINT_NUM; ticks++){
+    for (ticks = 0; ticks < VIA_POINT_NUM; ticks++)
+    {
         double time;
         for (int i = 0; i < 7; i++)
         {
-            arm.points[ticks].positions[i] = pi / 12 * i * ticks/VIA_POINT_NUM;
+            arm.points[ticks].positions[i] = pi / 12 * i * ticks / VIA_POINT_NUM;
         }
 
         //"+1" here means that the arm is moving after 1 period of starting the program.
-        time = (double)MOVING_TIME/VIA_POINT_NUM*(ticks+1);
+        time = (double)MOVING_TIME / VIA_POINT_NUM * (ticks + 1);
         arm.points[ticks].time_from_start = ros::Duration(time);
         //TODO: spinOnce必要か？
         ros::spinOnce();
     }
-
 }
 
 void PA10Controller::StartMoving()
 {
     //ros::Rate loop_rate(10); //set loop rate 10[Hz]
     ROS_INFO("Start Moving");
-
 
     MoveJoint();
     // Wait a little time to avoid error.
