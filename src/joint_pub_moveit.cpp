@@ -34,12 +34,12 @@ class PA10Controller
     //FIXME: メッセージ型を変えたので、関数の定義を変えたほうがいいかもね
     sensor_msgs::JointState InverseKinematics(std::vector<double> &position); //inverse kinematics
 
-    void MoveJoint();
+    void TrajectoryGeneration();
     void PathGenerate();
 
     trajectory_msgs::JointTrajectory arm; //joint state
 
-    //TODO: いらない変数とかヘッダーとかいずれ消す。下のこの2つ
+    //TODO: ticksはクラス変数のままで良いのか？
     double ticks;
 };
 
@@ -111,10 +111,9 @@ void PA10Controller::PathGenerate()
 }
 */
 
-//FIXME: 関数名がMoveJointではない。TrajectoryGenerationのほうがいいかも。
-void PA10Controller::MoveJoint()
+void PA10Controller::TrajectoryGeneration()
 {
-    //initiallize joint names
+    //initiallize joint states
     initJointState();
     for (ticks = 0; ticks < VIA_POINT_NUM; ticks++)
     {
@@ -137,8 +136,8 @@ void PA10Controller::StartMoving()
     //ros::Rate loop_rate(10); //set loop rate 10[Hz]
     ROS_INFO("Start Moving");
 
-    MoveJoint();
-    // Wait a little time to avoid error.
+    TrajectoryGeneration();
+    // Wait a little time to avoid error. TODO: sleepの時間が十分か検証
     ros::Duration(0.5).sleep();
     ROS_INFO("Press Enter to move");
     getc(stdin); //wait for keyboard input
