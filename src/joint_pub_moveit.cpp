@@ -23,7 +23,7 @@ class PA10Controller
 {
   public:
     void StartMoving();
-    PA10Controller(); //constructor
+    PA10Controller();
 
   private:
     ros::NodeHandle node_;     //node handler
@@ -40,7 +40,7 @@ class PA10Controller
     trajectory_msgs::JointTrajectory arm_; //joint state
 
     //TODO: ticksはクラス変数のままで良いのか？
-    int ticks;
+    int ticks = 0;
 };
 
 //Constructor (if you do not know about c++ class, please search on the internet.)
@@ -107,7 +107,7 @@ void PA10Controller::PathGenerate()
 
 void PA10Controller::TrajectoryGeneration()
 {
-    for (ticks = 0; ticks < VIA_POINT_NUM; ticks++)
+    while (ticks < VIA_POINT_NUM)
     {
         double time;
         for (int i = 0; i < 7; i++)
@@ -118,6 +118,8 @@ void PA10Controller::TrajectoryGeneration()
         //"+1" here means that the arm is moving after 1 period of starting the program.
         time = (double)MOVING_TIME / VIA_POINT_NUM * (ticks + 1);
         arm_.points[ticks].time_from_start = ros::Duration(time);
+
+        ticks++;
     }
 }
 
