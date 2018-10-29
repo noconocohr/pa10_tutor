@@ -47,7 +47,7 @@ class PA10Controller
 PA10Controller::PA10Controller()
 {
     //define ROS node
-    joint_pub_ = node_.advertise<trajectory_msgs::JointTrajectory>("/pa10/pa10_joint_controller/command", 50);
+    joint_pub_ = node_.advertise<trajectory_msgs::JointTrajectory>(/*topic name=*/"/pa10/pa10_joint_controller/command", /*queue_size=*/50);
 
     //initiallize joint states
     arm_.joint_names.resize(7);
@@ -124,7 +124,6 @@ void PA10Controller::TrajectoryGeneration()
 void PA10Controller::StartMoving()
 {
     //ros::Rate loop_rate(10); //set loop rate 10[Hz]
-    ROS_INFO("Start Moving");
 
     TrajectoryGeneration();
     // Wait a little time to avoid error.
@@ -132,6 +131,7 @@ void PA10Controller::StartMoving()
     ROS_INFO("Press Enter to move");
     getc(stdin); //wait for keyboard input
 
+    ROS_INFO("Start Moving");
     //publish joint states
     joint_pub_.publish(arm_);
     ROS_INFO("Published");
