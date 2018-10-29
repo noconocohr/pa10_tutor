@@ -65,7 +65,7 @@ PA10Controller::PA10Controller()
     arm_.points.resize(VIA_POINT_NUM);
 
     //FIXME: この下のtime_from_startは不要かも
-    arm_.points[0].time_from_start = ros::Duration((double)1 / MOVING_TIME);
+    //arm_.points[0].time_from_start = ros::Duration((double)1 / MOVING_TIME);
 
     //それぞれのpoints[]に対して、positions[]をリサイズしないといけないみたい。頭の悪いプログラムに見えるけど、仕方ない。
     for (int i = 0; i < VIA_POINT_NUM; i++)
