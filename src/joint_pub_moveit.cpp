@@ -10,9 +10,7 @@
 #include <math.h>
 
 #include "ros/ros.h"
-// TODO: この下2つ(console, jointstate)のヘッダって必要？
 #include "ros/console.h"
-#include "sensor_msgs/JointState.h"
 #include "trajectory_msgs/JointTrajectory.h"
 
 #define pi 3.1415926
@@ -30,16 +28,13 @@ class PA10Controller
     ros::Publisher joint_pub_; //define publisher
 
     /*Example definition of kinematics compute functions*/
-    std::vector<double> ForwardKinematics(sensor_msgs::JointState *joint); //forward kinematics
-    //FIXME: メッセージ型を変えたので、関数の定義を変えたほうがいいかもね
-    sensor_msgs::JointState InverseKinematics(std::vector<double> &position); //inverse kinematics
+    std::vector<double> ForwardKinematics(std::vector<double> &joint);
+    std::vector<double> InverseKinematics(std::vector<double> &position);
 
     void TrajectoryGeneration();
-    void PathGenerate();
 
     trajectory_msgs::JointTrajectory arm_; //joint state
 
-    //TODO: ticksはクラス変数のままで良いのか？
     int ticks = 0;
 };
 
@@ -64,9 +59,6 @@ PA10Controller::PA10Controller()
 
     arm_.points.resize(VIA_POINT_NUM);
 
-    //FIXME: この下のtime_from_startは不要かも
-    //arm_.points[0].time_from_start = ros::Duration((double)1 / MOVING_TIME);
-
     //それぞれのpoints[]に対して、positions[]をリサイズしないといけないみたい。頭の悪いプログラムに見えるけど、仕方ない。
     for (int i = 0; i < VIA_POINT_NUM; i++)
     {
@@ -83,27 +75,18 @@ PA10Controller::PA10Controller()
     arm_.header.frame_id = "";
 }
 
-/*example template
-std::vector<double> PA10Controller::ForwardKinematics(sensor_msgs::JointState *joint)
+//example template
+std::vector<double> PA10Controller::ForwardKinematics(std::vector<double> &joint)
 {
 
-//write by yourself
-
+    //write by yourself
 }
 
-
-sensor_msgs::joint_state PA10Controller::InverseKinematics(std::vector<double>& position)
+std::vector<double> PA10Controller::InverseKinematics(std::vector<double> &position)
 {
-  //write by yourself
-  // note: there are multiple answers regarding to inverse kinematics.
+    //write by yourself
+    // note: there are multiple answers regarding to inverse kinematics.
 }
-
-
-void PA10Controller::PathGenerate()
-{
-//write by yourself, by using 5-order interpolation
-}
-*/
 
 void PA10Controller::TrajectoryGeneration()
 {
@@ -139,7 +122,6 @@ void PA10Controller::StartMoving()
     ROS_INFO("Published");
 }
 
-//main function
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "joint_state_pub_moveit");
