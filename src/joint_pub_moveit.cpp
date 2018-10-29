@@ -35,7 +35,7 @@ class PA10Controller
 
     trajectory_msgs::JointTrajectory arm_; //joint state
 
-    int ticks = 0;
+    int ticks_ = 0;
 };
 
 //Constructor (if you do not know about c++ class, please search on the internet.)
@@ -90,19 +90,19 @@ std::vector<double> PA10Controller::InverseKinematics(std::vector<double> &posit
 
 void PA10Controller::TrajectoryGeneration()
 {
-    while (ticks < VIA_POINT_NUM)
+    while (ticks_ < VIA_POINT_NUM)
     {
         double time;
         for (int i = 0; i < 7; i++)
         {
-            arm_.points[ticks].positions[i] = pi / 12 * i * ticks / VIA_POINT_NUM;
+            arm_.points[ticks_].positions[i] = pi / 12 * i * ticks_ / VIA_POINT_NUM;
         }
 
         //"+1" here means that the arm is moving after 1 period of starting the program.
-        time = (double)MOVING_TIME / VIA_POINT_NUM * (ticks + 1);
-        arm_.points[ticks].time_from_start = ros::Duration(time);
+        time = (double)MOVING_TIME / VIA_POINT_NUM * (ticks_ + 1);
+        arm_.points[ticks_].time_from_start = ros::Duration(time);
 
-        ticks++;
+        ticks_++;
     }
 }
 
