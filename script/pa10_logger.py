@@ -1,4 +1,5 @@
 #! /usr/env/bin python2
+# coding:utf-8
 
 import rospy
 import tf
@@ -16,6 +17,7 @@ class PA10Logger(object):
         self.writer = csv.writer(self.file, lineterminator='\n')
         self.writer.writerow(["#time", "x", "y", "z", "roll", "pitch", "yaw"])
         # TODO: use_sim_timeをtrueにするとrospy.Time.nowに0が代入されてしまう模様。simtimeの時間を取ってくる必要があるっぽい。
+        # 現状、use_sim_timeをfalseにして対応。
         # https://answers.ros.org/question/300956/rospytimenow-returns-0/
         # http://wiki.ros.org/Clock
         self.time_started = rospy.Time.now().to_time()
